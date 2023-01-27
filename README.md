@@ -6,4 +6,5 @@ This sample code based on below items.
  
 
 Totorial document download --> 
-[Tutorial.pdf](https://github.com/kairoski03/ticket/files/10515664/Tutorial.pdf)
+[Tutorial.pdf](https://github.com/kairoski03/ticket/files/10515900/Tutorial.pdf)
+
