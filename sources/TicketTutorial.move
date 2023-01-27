@@ -1,3 +1,5 @@
+/// The original source code is https://github.com/magnum6actual/Aptos-Tutorial
+
 module TicketTutorial::Tickets {
 	use std::signer;
 	use std::vector;
@@ -8,7 +10,7 @@ module TicketTutorial::Tickets {
 	use aptos_framework::account;
 	use aptos_std::table_with_length;
 
-	const ENO_VENUE: u64 = 0;
+	const ENO_THEATER: u64 = 0;
 	const ENO_TICKETS: u64 = 1;
 	const ENO_ENVELOPE: u64 = 2;
 	const EINVALID_TICKET_COUNT: u64 = 3;
@@ -37,9 +39,12 @@ module TicketTutorial::Tickets {
 		tickets: vector<ConcertTicket>,
 	}
 
-	public entry fun init_theater(vanue_owner: &signer, max_seats: u64) {
+	public entry fun init_theater(
+		seller: &signer,
+		max_seats: u64,
+	) {
 		let available_tickets = table_with_length::new<SeatIdentifier, ConcertTicket>();
-		move_to<Theater>(vanue_owner, Theater {available_tickets, max_seats});
+		move_to<Theater>(seller, Theater {available_tickets, max_seats});
 	}
 
 	public entry fun create_ticket(
@@ -50,7 +55,7 @@ module TicketTutorial::Tickets {
 		price: u64,
 	) acquires Theater {
 		let seller_addr = signer::address_of(seller);
-		assert!(exists<Theater>(seller_addr), ENO_VENUE);
+		assert!(exists<Theater>(seller_addr), ENO_THEATER);
 		let current_seat_count = available_ticket_count(seller_addr);
 		let theater = borrow_global_mut<Theater>(seller_addr);
 		assert!(current_seat_count < theater.max_seats, EMAX_SEATS);
@@ -91,7 +96,7 @@ module TicketTutorial::Tickets {
 
 		// initialize the theater
 		init_theater(&seller, 3);
-		assert!(exists<Theater>(seller_addr), ENO_VENUE);
+		assert!(exists<Theater>(seller_addr), ENO_THEATER);
 
 		// create some tickets
 		create_ticket(&seller, string::utf8(b"A"), 24, string::utf8(b"AB43C7F"), 15);
